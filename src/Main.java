@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        ArrayList<Expense> expenses = new ArrayList<>();
+        ArrayList<Expense> store = new ArrayList<>();
         int nextId = 1;
 
         menu:
@@ -15,6 +15,7 @@ public class Main {
                         === EXPENSE TRACKER ===
                         1. Add Expense
                         2. View All Expenses
+                        3. Delete Expense
                         3. Exit
                         Choose an option:""");
                 String choice = sc.nextLine();
@@ -28,23 +29,39 @@ public class Main {
                         LocalDate date = LocalDate.parse(sc.nextLine());
 
                         Expense expense = new Expense(nextId++,amount,category,date);
-                        expenses.add(expense);
+                        store.add(expense);
                         System.out.print("Expense added successfully!\n");
                         break;
 
                     case "2":
-                        if(expenses.isEmpty()){
+                        if(store.isEmpty()){
                             System.out.print("Expenses yet to be added...\n");
                             break;
                         }
-                        for(Expense n:expenses){
+                        for(Expense n:store){
                             System.out.println(n);
                         }
                         break;
                     case "3":
+                        System.out.print("Enter the expense id:");
+                        int userInput = Integer.parseInt(sc.nextLine());
+                        Expense temp = null;
+                        for(Expense m:store){
+                            if(m.id()==userInput){
+                                temp = m;
+                                break;
+                            }
+                        }
+                        if (temp!= null) {
+                            store.remove(temp);
+                            System.out.println("Expense deleted successfully.");
+                        } else {
+                            System.out.println("Expense ID not found.");
+                        }
+                    case "4":
                         break menu;
                     default:
-                        System.out.println("Enter a valid number from 1-3");
+                        System.out.println("Enter a valid choice (1-4)");
                         break;
                 }
             }
