@@ -25,7 +25,7 @@ public class Main {
                 try {
                     choice = Integer.parseInt(sc.nextLine());
                 } catch (NumberFormatException e) {
-                    System.out.print(e.getMessage() + "Invalid input. Please enter numbers only (1-4):");
+                    System.out.print("Invalid input. Please enter numbers only (1-4):");
                 }
                 switch (choice) {
 
@@ -103,20 +103,24 @@ public class Main {
 
                     //Deleting expense
                     case 3:
-                        System.out.print("Enter the expense id:");
-                        int userInput = Integer.parseInt(sc.nextLine());
-                        Expense temp = null;
-                        for (Expense m : store) {
-                            if (m.id() == userInput) {
-                                temp = m;
-                                break;
+                        try {
+                            System.out.print("Enter the expense id: ");
+                            int userInput = Integer.parseInt(sc.nextLine());
+                            Expense temp = null;
+                            for (Expense m : store) {
+                                if (m.id() == userInput) {
+                                    temp = m;
+                                    break;
+                                }
                             }
-                        }
-                        if (temp != null) {
-                            store.remove(temp);
-                            System.out.println("Expense deleted successfully.");
-                        } else {
-                            System.out.println("Expense ID not found.");
+                            if (temp != null) {
+                                store.remove(temp);
+                                System.out.println("Expense deleted successfully.");
+                            } else {
+                                System.out.println("Expense ID not found.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid ID. Please enter a valid number.");
                         }
                         break;
                     case 4:
