@@ -1,6 +1,10 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.time.LocalDate;
@@ -12,9 +16,37 @@ public class Main {
         ArrayList<Expense> store = new ArrayList<>();
         int nextId = 1;
 
+
+        //Startup loading
+        Path filePath = Path.of("expenses.csv");
+        if(Files.exists(filePath)) {
+            try{
+                List<String> lines= Files.readAllLines(filePath);
+                int maxId=0;
+                for(String line:lines){
+                    String[] parts = line.split(",");
+                    int id = Integer.parseInt(parts[0]);
+                    BigDecimal amount = new BigDecimal(parts[1]);
+                    String category = parts[2];
+                    LocalDate date = LocalDate.parse(parts[3]);
+
+                    store.add(new Expense(id,amount,category,date));
+
+                    if(id>maxId){
+                        maxId=id;
+                    }
+                }
+                nextId = maxId+1;
+                System.out.println("Loaded " + store.size() + " expense(s) from file.");
+            }
+            catch (IOException  e){
+                System.out.println("Error loading expenses:"+e.getMessage());
+            }
+        }
+
         menu:
             while(true) {
-                System.out.println("""
+                System.out.print("""
                         === EXPENSE TRACKER ===
                         1. Add Expense
                         2. View All Expenses
@@ -124,6 +156,18 @@ public class Main {
                         }
                         break;
                     case 4:
+                        //Saving expenses and exiting
+                        try {
+                            List<String> lines = new ArrayList<>();
+                            for (Expense e : store) {
+                                String line = e.id() + "," + e.amount() + "," + e.category() + "," + e.date();
+                                lines.add(line);
+                            }
+                            Files.write(Path.of("expenses.csv"), lines);
+                            System.out.println("Expenses saved successfully.");
+                        } catch(IOException e){
+                            System.out.println("Error saving expenses:"+e.getMessage());
+                        }
                         break menu;
                     default:
                         System.out.println("Enter a valid choice (1-4)");
